@@ -2,7 +2,6 @@ package sqlc
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,8 +11,6 @@ func TestTxTransfer(t *testing.T) {
 
 	account1 := createAccountTest(t)
 	account2 := createAccountTest(t)
-
-	fmt.Println(">> before:", account1.Balance, account2.Balance)
 
 	n := 5
 	amount := int64(10)
@@ -84,8 +81,6 @@ func TestTxTransfer(t *testing.T) {
 		require.NotEmpty(t, accountTo)
 		require.Equal(t, accountTo.ID, account2.ID)
 
-		fmt.Println(">> tx:", accountFrom.Balance, accountTo.Balance)
-
 		diff1 := account1.Balance - accountFrom.Balance
 		diff2 := accountTo.Balance - account2.Balance
 
@@ -108,5 +103,4 @@ func TestTxTransfer(t *testing.T) {
 	require.Equal(t, account1.Balance-int64(n)*amount, updatedAccount1.Balance)
 	require.Equal(t, account2.Balance+int64(n)*amount, updatedAccount2.Balance)
 
-	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance)
 }

@@ -53,7 +53,7 @@ func TestGetTransfer(t *testing.T) {
 func TestListTransfers(t *testing.T) {
 	account1 := createAccountTest(t)
 	account2 := createAccountTest(t)
-	for range 5 {
+	for i := 0; i < 10; i++ {
 		createTransferTest(t, account1, account2)
 	}
 

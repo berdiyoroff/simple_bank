@@ -46,7 +46,7 @@ func TestGetEntry(t *testing.T) {
 
 func TestAccountEntries(t *testing.T) {
 	account1 := createAccountTest(t)
-	for range 5 {
+	for i := 0; i < 10; i++ {
 		createEntryTest(t, account1)
 	}
 	arg := AccountEntriesParams{

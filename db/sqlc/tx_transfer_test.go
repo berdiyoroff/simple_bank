@@ -17,7 +17,7 @@ func TestTxTransfer(t *testing.T) {
 	errs := make(chan error)
 	results := make(chan TransferTxResult)
 
-	for range n {
+	for i := 0; i < n; i++ {
 		go func() {
 			result, err := testStore.TranferTx(context.Background(), TransferTxParams{
 				FromAccountID: account1.ID,

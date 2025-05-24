@@ -78,7 +78,7 @@ func TestDeleteAccount(t *testing.T) {
 }
 
 func TestListAccounts(t *testing.T) {
-	for range 10 {
+	for i := 0; i < 10; i++ {
 		createAccountTest(t)
 	}
 

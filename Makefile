@@ -1,4 +1,4 @@
-.PHONY: postgres createdb dropdb migrate-up migrate-down migrate-force
+.PHONY: postgres createdb dropdb migrate-up migrate-down migrate-force test server
 
 postgres:
 	docker run --name postgres17 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:17-alpine
@@ -20,3 +20,6 @@ migrate-force:
 
 test:
 	go test -v -cover ./...
+
+server:
+	go run main.go

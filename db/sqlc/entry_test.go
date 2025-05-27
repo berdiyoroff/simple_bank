@@ -1,4 +1,4 @@
-package sqlc
+package db
 
 import (
 	"context"
@@ -15,7 +15,7 @@ func createEntryTest(t *testing.T, account Account) Entry {
 		AccountID: account.ID,
 		Amount:    util.RandomInt(-100, 100),
 	}
-	entry, err := testStore.q.CreateEntry(context.Background(), arg)
+	entry, err := testStore.CreateEntry(context.Background(), arg)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, entry)
@@ -35,7 +35,7 @@ func TestCreateEntry(t *testing.T) {
 func TestGetEntry(t *testing.T) {
 	account := createAccountTest(t)
 	entry1 := createEntryTest(t, account)
-	entry2, err := testStore.q.GetEntry(context.Background(), entry1.ID)
+	entry2, err := testStore.GetEntry(context.Background(), entry1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry2)
 	require.Equal(t, entry1.ID, entry2.ID)
@@ -55,7 +55,7 @@ func TestAccountEntries(t *testing.T) {
 		Offset:    0,
 	}
 
-	entries, err := testStore.q.AccountEntries(context.Background(), arg)
+	entries, err := testStore.AccountEntries(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, entries, 5)
 	for _, entry := range entries {
@@ -73,7 +73,7 @@ func TestUpdateEntry(t *testing.T) {
 		ID:     entry1.ID,
 		Amount: util.RandomInt(-100, 100),
 	}
-	entry2, err := testStore.q.UpdateEntry(context.Background(), arg)
+	entry2, err := testStore.UpdateEntry(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry2)
 	require.Equal(t, entry1.ID, entry2.ID)
@@ -85,9 +85,9 @@ func TestUpdateEntry(t *testing.T) {
 func TestDeleteEntry(t *testing.T) {
 	account := createAccountTest(t)
 	entry1 := createEntryTest(t, account)
-	err := testStore.q.DeleteEntry(context.Background(), entry1.ID)
+	err := testStore.DeleteEntry(context.Background(), entry1.ID)
 	require.NoError(t, err)
-	entry2, err := testStore.q.GetEntry(context.Background(), entry1.ID)
+	entry2, err := testStore.GetEntry(context.Background(), entry1.ID)
 	require.Error(t, err)
 	require.Equal(t, err, pgx.ErrNoRows)
 	require.Empty(t, entry2)

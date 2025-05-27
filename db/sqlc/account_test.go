@@ -1,4 +1,4 @@
-package sqlc
+package db
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func createAccountTest(t *testing.T) Account {
 		Currency: util.RandomCurrency(),
 	}
 
-	account, err := testStore.q.CreateAccount(context.Background(), arg)
+	account, err := testStore.CreateAccount(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 	require.Equal(t, arg.Owner, account.Owner)
@@ -35,7 +35,7 @@ func TestCreateAccount(t *testing.T) {
 
 func TestGetAccount(t *testing.T) {
 	account1 := createAccountTest(t)
-	account2, err := testStore.q.GetAccount(context.Background(), account1.ID)
+	account2, err := testStore.GetAccount(context.Background(), account1.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, account2)
@@ -54,7 +54,7 @@ func TestUpdateAccount(t *testing.T) {
 		Balance: util.RandomInt(0, 1000),
 	}
 
-	account2, err := testStore.q.UpdateAccount(context.Background(), params)
+	account2, err := testStore.UpdateAccount(context.Background(), params)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, account2)
@@ -68,9 +68,9 @@ func TestUpdateAccount(t *testing.T) {
 func TestDeleteAccount(t *testing.T) {
 	account1 := createAccountTest(t)
 
-	err := testStore.q.DeleteAccount(context.Background(), account1.ID)
+	err := testStore.DeleteAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
-	account2, err := testStore.q.GetAccount(context.Background(), account1.ID)
+	account2, err := testStore.GetAccount(context.Background(), account1.ID)
 
 	require.Error(t, err)
 	require.Equal(t, err, pgx.ErrNoRows)
@@ -87,7 +87,7 @@ func TestListAccounts(t *testing.T) {
 		Offset: 5,
 	}
 
-	accounts, err := testStore.q.ListAccounts(context.Background(), arg)
+	accounts, err := testStore.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, accounts, 5)
 
@@ -104,7 +104,7 @@ func TestAddAccountBalance(t *testing.T) {
 		Amount: util.RandomInt(0, 100),
 	}
 
-	account2, err := testStore.q.AddAccountBalance(context.Background(), params)
+	account2, err := testStore.AddAccountBalance(context.Background(), params)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, account2)

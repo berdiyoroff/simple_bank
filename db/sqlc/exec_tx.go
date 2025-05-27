@@ -1,4 +1,4 @@
-package sqlc
+package db
 
 import (
 	"context"
@@ -32,5 +32,5 @@ func (s *Store) querier(ctx context.Context) Querier {
 	if ok {
 		return querier
 	}
-	return s.q
+	return s.Queries
 }

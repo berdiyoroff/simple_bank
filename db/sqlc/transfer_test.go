@@ -1,4 +1,4 @@
-package sqlc
+package db
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func createTransferTest(t *testing.T, account1, account2 Account) Transfer {
 		Amount:        util.RandomInt(1, 100),
 	}
 
-	transfer, err := testStore.q.CreateTransfer(context.Background(), arg)
+	transfer, err := testStore.CreateTransfer(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer)
 	require.Equal(t, transfer.FromAccountID, arg.FromAccountID)
@@ -40,7 +40,7 @@ func TestGetTransfer(t *testing.T) {
 	account2 := createAccountTest(t)
 	transfer1 := createTransferTest(t, account1, account2)
 
-	transfer2, err := testStore.q.GetTransfer(context.Background(), transfer1.ID)
+	transfer2, err := testStore.GetTransfer(context.Background(), transfer1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer2)
 	require.Equal(t, transfer1.FromAccountID, transfer2.FromAccountID)
@@ -64,7 +64,7 @@ func TestListTransfers(t *testing.T) {
 		Offset:        0,
 	}
 
-	transfers, err := testStore.q.ListTransfers(context.Background(), arg)
+	transfers, err := testStore.ListTransfers(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, transfers, 5)
 
@@ -84,7 +84,7 @@ func TestUpdateTransfer(t *testing.T) {
 		Amount: util.RandomInt(1, 100),
 	}
 
-	transfer2, err := testStore.q.UpdateTransfer(context.Background(), arg)
+	transfer2, err := testStore.UpdateTransfer(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer2)
 	require.Equal(t, transfer1.ID, transfer2.ID)
@@ -99,9 +99,9 @@ func TestDeleteTransfer(t *testing.T) {
 	account2 := createAccountTest(t)
 	transfer1 := createTransferTest(t, account1, account2)
 
-	err := testStore.q.DeleteTransfer(context.Background(), transfer1.ID)
+	err := testStore.DeleteTransfer(context.Background(), transfer1.ID)
 	require.NoError(t, err)
-	transfer2, err := testStore.q.GetTransfer(context.Background(), transfer1.ID)
+	transfer2, err := testStore.GetTransfer(context.Background(), transfer1.ID)
 	require.Error(t, err)
 	require.Equal(t, err, pgx.ErrNoRows)
 	require.Empty(t, transfer2)

@@ -1,4 +1,4 @@
-package sqlc
+package db
 
 import (
 	"testing"
@@ -59,7 +59,7 @@ func TestTxTransfer(t *testing.T) {
 	// 	require.Equal(t, transfer.Amount, amount)
 	// 	require.NotZero(t, transfer.CreatedAt)
 
-	// 	_, err = testStore.q.GetTransfer(context.Background(), transfer.ID)
+	// 	_, err = testStore.GetTransfer(context.Background(), transfer.ID)
 	// 	require.NoError(t, err)
 
 	// 	//entry from
@@ -70,7 +70,7 @@ func TestTxTransfer(t *testing.T) {
 	// 	require.Equal(t, entryFrom.AccountID, account1.ID)
 	// 	require.Equal(t, entryFrom.Amount, -amount)
 
-	// 	_, err = testStore.q.GetEntry(context.Background(), entryFrom.ID)
+	// 	_, err = testStore.GetEntry(context.Background(), entryFrom.ID)
 	// 	require.NoError(t, err)
 
 	// 	//entry to
@@ -81,7 +81,7 @@ func TestTxTransfer(t *testing.T) {
 	// 	require.Equal(t, entryTo.AccountID, account2.ID)
 	// 	require.Equal(t, entryTo.Amount, amount)
 
-	// 	_, err = testStore.q.GetEntry(context.Background(), entryTo.ID)
+	// 	_, err = testStore.GetEntry(context.Background(), entryTo.ID)
 	// 	require.NoError(t, err)
 
 	// 	//account
@@ -106,10 +106,10 @@ func TestTxTransfer(t *testing.T) {
 	// 	existed[k] = true
 	// }
 
-	// updatedAccount1, err := testStore.q.GetAccount(context.Background(), account1.ID)
+	// updatedAccount1, err := testStore.GetAccount(context.Background(), account1.ID)
 	// require.NoError(t, err)
 
-	// updatedAccount2, err := testStore.q.GetAccount(context.Background(), account2.ID)
+	// updatedAccount2, err := testStore.GetAccount(context.Background(), account2.ID)
 	// require.NoError(t, err)
 
 	// require.Equal(t, account1.Balance-int64(n)*amount, updatedAccount1.Balance)

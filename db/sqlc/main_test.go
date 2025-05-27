@@ -5,18 +5,20 @@ import (
 	"os"
 	"testing"
 
+	"github.com/berdiyoroff/simple_bank/config"
 	"github.com/berdiyoroff/simple_bank/pkg/database/postgres"
 )
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
-)
-
-var testStore *Store
+var testStore Store
 
 func TestMain(m *testing.M) {
-	testPool, err := postgres.NewPool(dbSource)
+
+	config, err := config.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("cannot load config: ", err)
+	}
+
+	testPool, err := postgres.NewPool(config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}

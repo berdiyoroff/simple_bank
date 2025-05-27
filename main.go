@@ -4,17 +4,18 @@ import (
 	"log"
 
 	"github.com/berdiyoroff/simple_bank/api"
+	"github.com/berdiyoroff/simple_bank/config"
 	db "github.com/berdiyoroff/simple_bank/db/sqlc"
 	"github.com/berdiyoroff/simple_bank/pkg/database/postgres"
 )
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
-)
-
 func main() {
-	conn, err := postgres.NewPool(dbSource)
+	config, err := config.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
+	conn, err := postgres.NewPool(config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
@@ -22,7 +23,7 @@ func main() {
 	store := db.NewStore(conn)
 
 	server := api.NewServer(store)
-	err = server.Start(":8080")
+	err = server.Start(config.ServerAddress)
 	if err != nil {
 		log.Fatal("cannot start server:", err)
 	}

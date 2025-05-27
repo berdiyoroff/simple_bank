@@ -2,19 +2,20 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 
 	db "github.com/berdiyoroff/simple_bank/db/sqlc"
 	"github.com/gin-gonic/gin"
 )
 
-type CreateAccountRequest struct {
+type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR CAD"`
+	Currency string `json:"currency" binding:"required,currency"`
 }
 
 func (server *Server) createAccount(c *gin.Context) {
-	var req CreateAccountRequest
+	var req createAccountRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -36,12 +37,12 @@ func (server *Server) createAccount(c *gin.Context) {
 
 }
 
-type GetAccountParams struct {
+type getAccountParams struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
 func (server *Server) getAccount(c *gin.Context) {
-	var params GetAccountParams
+	var params getAccountParams
 
 	if err := c.ShouldBindUri(&params); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -50,26 +51,27 @@ func (server *Server) getAccount(c *gin.Context) {
 
 	account, err := server.store.GetAccount(c, params.ID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			c.JSON(http.StatusNotFound, errorResponse(err))
 			return
+		} else {
+			c.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
 		}
-		c.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
 	}
 
 	c.JSON(http.StatusOK, account)
 }
 
-type ListAccountRequest struct {
-	PageNumber int32 `json:"page_number" binding:"required,min=1"`
-	PageSize   int32 `json:"page_size" binding:"required,min=1"`
+type listAccountRequest struct {
+	PageNumber int32 `form:"page_number" binding:"required,min=1"`
+	PageSize   int32 `form:"page_size" binding:"required,min=5,max=10"`
 }
 
 func (server *Server) listAccounts(c *gin.Context) {
-	var params ListAccountRequest
+	var params listAccountRequest
 
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}

@@ -28,13 +28,16 @@ func createEntryTest(t *testing.T, account Account) Entry {
 }
 
 func TestCreateEntry(t *testing.T) {
-	account := createAccountTest(t)
+	user := createUserTest(t)
+	account := createAccountTest(t, user.Username)
 	createEntryTest(t, account)
 }
 
 func TestGetEntry(t *testing.T) {
-	account := createAccountTest(t)
+	user := createUserTest(t)
+	account := createAccountTest(t, user.Username)
 	entry1 := createEntryTest(t, account)
+
 	entry2, err := testStore.GetEntry(context.Background(), entry1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry2)
@@ -45,7 +48,9 @@ func TestGetEntry(t *testing.T) {
 }
 
 func TestAccountEntries(t *testing.T) {
-	account1 := createAccountTest(t)
+	user := createUserTest(t)
+	account1 := createAccountTest(t, user.Username)
+
 	for i := 0; i < 10; i++ {
 		createEntryTest(t, account1)
 	}
@@ -67,7 +72,9 @@ func TestAccountEntries(t *testing.T) {
 }
 
 func TestUpdateEntry(t *testing.T) {
-	account := createAccountTest(t)
+	user := createUserTest(t)
+	account := createAccountTest(t, user.Username)
+
 	entry1 := createEntryTest(t, account)
 	arg := UpdateEntryParams{
 		ID:     entry1.ID,
@@ -83,8 +90,10 @@ func TestUpdateEntry(t *testing.T) {
 }
 
 func TestDeleteEntry(t *testing.T) {
-	account := createAccountTest(t)
+	user := createUserTest(t)
+	account := createAccountTest(t, user.Username)
 	entry1 := createEntryTest(t, account)
+
 	err := testStore.DeleteEntry(context.Background(), entry1.ID)
 	require.NoError(t, err)
 	entry2, err := testStore.GetEntry(context.Background(), entry1.ID)

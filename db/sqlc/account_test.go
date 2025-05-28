@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createAccountTest(t *testing.T) Account {
+func createAccountTest(t *testing.T, owner string) Account {
 	arg := CreateAccountParams{
-		Owner:    util.RandomString(6),
+		Owner:    owner,
 		Balance:  util.RandomInt(0, 1000),
 		Currency: util.RandomCurrency(),
 	}
@@ -30,11 +30,13 @@ func createAccountTest(t *testing.T) Account {
 }
 
 func TestCreateAccount(t *testing.T) {
-	createAccountTest(t)
+	user := createUserTest(t)
+	createAccountTest(t, user.Username)
 }
 
 func TestGetAccount(t *testing.T) {
-	account1 := createAccountTest(t)
+	user := createUserTest(t)
+	account1 := createAccountTest(t, user.Username)
 	account2, err := testStore.GetAccount(context.Background(), account1.ID)
 
 	require.NoError(t, err)
@@ -47,7 +49,8 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestUpdateAccount(t *testing.T) {
-	account1 := createAccountTest(t)
+	user := createUserTest(t)
+	account1 := createAccountTest(t, user.Username)
 
 	params := UpdateAccountParams{
 		ID:      account1.ID,
@@ -66,7 +69,8 @@ func TestUpdateAccount(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
-	account1 := createAccountTest(t)
+	user := createUserTest(t)
+	account1 := createAccountTest(t, user.Username)
 
 	err := testStore.DeleteAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
@@ -78,18 +82,18 @@ func TestDeleteAccount(t *testing.T) {
 }
 
 func TestListAccounts(t *testing.T) {
-	for i := 0; i < 10; i++ {
-		createAccountTest(t)
-	}
+	user := createUserTest(t)
+
+	createAccountTest(t, user.Username)
 
 	arg := ListAccountsParams{
-		Limit:  5,
-		Offset: 5,
+		Limit:  1,
+		Offset: 0,
 	}
 
 	accounts, err := testStore.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
-	require.Len(t, accounts, 5)
+	require.Len(t, accounts, 1)
 
 	for _, account := range accounts {
 		require.NotEmpty(t, account)
@@ -97,7 +101,8 @@ func TestListAccounts(t *testing.T) {
 }
 
 func TestAddAccountBalance(t *testing.T) {
-	account1 := createAccountTest(t)
+	user := createUserTest(t)
+	account1 := createAccountTest(t, user.Username)
 
 	params := AddAccountBalanceParams{
 		ID:     account1.ID,

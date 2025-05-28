@@ -30,14 +30,18 @@ func createTransferTest(t *testing.T, account1, account2 Account) Transfer {
 }
 
 func TestCreateTransfer(t *testing.T) {
-	account1 := createAccountTest(t)
-	account2 := createAccountTest(t)
+	user1 := createUserTest(t)
+	user2 := createUserTest(t)
+	account1 := createAccountTest(t, user1.Username)
+	account2 := createAccountTest(t, user2.Username)
 	createTransferTest(t, account1, account2)
 }
 
 func TestGetTransfer(t *testing.T) {
-	account1 := createAccountTest(t)
-	account2 := createAccountTest(t)
+	user1 := createUserTest(t)
+	user2 := createUserTest(t)
+	account1 := createAccountTest(t, user1.Username)
+	account2 := createAccountTest(t, user2.Username)
 	transfer1 := createTransferTest(t, account1, account2)
 
 	transfer2, err := testStore.GetTransfer(context.Background(), transfer1.ID)
@@ -51,8 +55,10 @@ func TestGetTransfer(t *testing.T) {
 }
 
 func TestListTransfers(t *testing.T) {
-	account1 := createAccountTest(t)
-	account2 := createAccountTest(t)
+	user1 := createUserTest(t)
+	user2 := createUserTest(t)
+	account1 := createAccountTest(t, user1.Username)
+	account2 := createAccountTest(t, user2.Username)
 	for i := 0; i < 10; i++ {
 		createTransferTest(t, account1, account2)
 	}
@@ -75,8 +81,10 @@ func TestListTransfers(t *testing.T) {
 }
 
 func TestUpdateTransfer(t *testing.T) {
-	account1 := createAccountTest(t)
-	account2 := createAccountTest(t)
+	user1 := createUserTest(t)
+	user2 := createUserTest(t)
+	account1 := createAccountTest(t, user1.Username)
+	account2 := createAccountTest(t, user2.Username)
 	transfer1 := createTransferTest(t, account1, account2)
 
 	arg := UpdateTransferParams{
@@ -95,8 +103,10 @@ func TestUpdateTransfer(t *testing.T) {
 }
 
 func TestDeleteTransfer(t *testing.T) {
-	account1 := createAccountTest(t)
-	account2 := createAccountTest(t)
+	user1 := createUserTest(t)
+	user2 := createUserTest(t)
+	account1 := createAccountTest(t, user1.Username)
+	account2 := createAccountTest(t, user2.Username)
 	transfer1 := createTransferTest(t, account1, account2)
 
 	err := testStore.DeleteTransfer(context.Background(), transfer1.ID)
